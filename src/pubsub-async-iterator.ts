@@ -42,9 +42,10 @@ export class PubSubAsyncIterator<T> implements AsyncIterableIterator<T> {
     this.listening = true;
     this.eventsArray =
       typeof eventNames === "string" ? [eventNames] : eventNames;
+    this.subscribeAll();
   }
 
-  public async next() {
+  public async next(): Promise<IteratorResult<T>> {
     await this.subscribeAll();
     return this.listening ? this.pullValue() : this.return();
   }
@@ -59,7 +60,7 @@ export class PubSubAsyncIterator<T> implements AsyncIterableIterator<T> {
     return Promise.reject(error);
   }
 
-  public [Symbol.asyncIterator]() {
+  public [Symbol.asyncIterator](): AsyncIterableIterator<T> {
     return this;
   }
 
